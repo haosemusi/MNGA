@@ -747,7 +747,7 @@ struct TopicDetailsView: View {
       floorToJump: $floorToJump,
       pageToJump: $dataSource.loadFromPage,
     )
-    .maybeNavigationTransition(.zoom(sourceID: "jump", in: transition))
+    .maybeZoomNavigationTransition(sourceID: "jump", in: transition)
     .presentationDetents([.medium])
   }
 

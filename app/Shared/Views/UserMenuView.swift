@@ -9,7 +9,6 @@ import Foundation
 import SDWebImageSwiftUI
 import SwiftUI
 import SwiftUIX
-import TipKit
 
 struct UserMenuView: View {
   @StateObject var notification = NotificationModel.shared
@@ -123,7 +122,7 @@ struct UserMenuView: View {
         if authStorage.signedIn {
           userSwitcher
         } else {
-          Button(action: { reSignIn() }) {
+          Button(action: { signIn() }) {
             Label("Sign In", systemImage: "person.crop.circle.badge.plus")
           }
         }
@@ -141,49 +140,29 @@ struct UserMenuView: View {
     }
   }
 
-  var body: some View {
+  private var menuContent: some View {
     menu
       .onChange(of: authStorage.authInfo.uid, initial: true) { model.loadData(uid: $1) }
+      .sheet(isPresented: $authStorage.isSigning) { LoginView() }
+      .sheet(isPresented: $prefs.showing) { PreferencesView() }
       .sheet(isPresented: $showAboutViewAsModal) { AboutNavigationView() }
-      .popoverTip(tip)
       .navigationDestination(isPresented: $notification.showingFromUserMenu) { NotificationListView() }
+  }
+
+  var body: some View {
+    menuContent
   }
 
   func signOut() {
     authStorage.clearCurrentAuth()
   }
 
-  // Sign out and pop the sign in sheet.
-  func reSignIn() {
-    authStorage.clearCurrentAuth()
-    if !authStorage.signedIn {
-      authStorage.isSigning = true
-    }
+  func signIn() {
+    authStorage.isSigning = true
   }
 
   func addUser() {
     authStorage.isSigning = true
   }
 
-  var tip: (any Tip)? {
-    if !authStorage.signedIn {
-      UserMenuTip()
-    } else {
-      nil
-    }
-  }
-}
-
-struct UserMenuTip: Tip {
-  var title: Text {
-    Text("MNGA Main Menu")
-  }
-
-  var message: Text? {
-    Text("Sign in to NGA and discover more features here.")
-  }
-
-  var options: [Option] {
-    MaxDisplayCount(1)
-  }
 }

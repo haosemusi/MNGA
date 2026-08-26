@@ -107,9 +107,9 @@ extension ToolbarContent {
 
 extension View {
   @ViewBuilder
-  func maybeNavigationTransition(_ style: some NavigationTransition) -> some View {
+  func maybeZoomNavigationTransition(sourceID: some Hashable, in namespace: Namespace.ID) -> some View {
     if #available(iOS 26.0, *) {
-      navigationTransition(style)
+      navigationTransition(.zoom(sourceID: sourceID, in: namespace))
     } else {
       // Although it's also available on iOS 18, we always pair it with `matchedTransitionSource`
       // on toolbar items which is only available on iOS 26.

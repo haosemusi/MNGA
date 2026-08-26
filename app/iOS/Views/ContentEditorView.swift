@@ -18,25 +18,56 @@ enum Focus {
 
 struct SubjectTextFieldView: View {
   @Binding var subject: String
-  @State var selection: TextSelection?
-
   let focused: Bool
 
-  func addTagPlaceholder() {
-    // FIXME: iOS 26: cannot use unicode (localized) string here, use "..." instead for now.
-    let placeholder = "..."
-    subject = "[\(placeholder)]\(subject)"
-    let range = subject.range(of: placeholder)!
-    selection = TextSelection(range: range)
+  @ViewBuilder
+  var body: some View {
+    if #available(iOS 18.0, *) {
+      SelectableSubjectTextFieldView(subject: $subject, focused: focused)
+    } else {
+      LegacySubjectTextFieldView(subject: $subject, focused: focused)
+    }
   }
+}
+
+@available(iOS 18.0, *)
+private struct SelectableSubjectTextFieldView: View {
+  @Binding var subject: String
+  @State private var selection: TextSelection?
+  let focused: Bool
 
   var body: some View {
     TextField("", text: $subject, selection: $selection)
       .toolbar {
-        // Show toolbar only when focused, otherwise it will also be shown in other text fields.
         if focused {
           ToolbarItemGroup(placement: .keyboard) {
             Button(action: addTagPlaceholder) {
+              Label("Add Tag", systemImage: "tag")
+                .labelStyle(.titleAndIcon)
+            }
+            Spacer()
+          }
+        }
+      }
+  }
+
+  private func addTagPlaceholder() {
+    let placeholder = "..."
+    subject = "[\(placeholder)]\(subject)"
+    selection = subject.range(of: placeholder).map(TextSelection.init(range:))
+  }
+}
+
+private struct LegacySubjectTextFieldView: View {
+  @Binding var subject: String
+  let focused: Bool
+
+  var body: some View {
+    TextField("", text: $subject)
+      .toolbar {
+        if focused {
+          ToolbarItemGroup(placement: .keyboard) {
+            Button(action: { subject = "[...]\(subject)" }) {
               Label("Add Tag", systemImage: "tag")
                 .labelStyle(.titleAndIcon)
             }

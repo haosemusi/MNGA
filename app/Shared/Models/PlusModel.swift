@@ -82,16 +82,26 @@ class PaywallModel: ObservableObject {
 
   var status: UnlockStatus {
     #if DEBUG
-      debugOverride ?? cachedStatus
-    #else
-      cachedStatus
+      if let debugOverride {
+        return debugOverride
+      }
     #endif
+
+    // Signed-in users receive full access without requiring a StoreKit entitlement.
+    if AuthStorage.shared.signedIn {
+      return .paid
+    }
+
+    return cachedStatus
   }
 
   @Published var isStatusTrusted = false
 
   var trustedStatus: UnlockStatus? {
-    isStatusTrusted ? status : nil
+    if AuthStorage.shared.signedIn {
+      return .paid
+    }
+    return isStatusTrusted ? status : nil
   }
 
   var isUnlocked: Bool {

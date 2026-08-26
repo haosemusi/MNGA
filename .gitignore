@@ -4,6 +4,7 @@
 /out/*.xcframework
 .idea/
 .build/
+/build/
 
 target
 .env

@@ -235,7 +235,7 @@ struct TopicListView: View {
         .navigationBarTitleDisplayMode(.inline)
     }
     // FIXME: transition here may crash when navigating to subforum
-    // .maybeNavigationTransition(.zoom(sourceID: "subforums", in: transition))
+    // .maybeZoomNavigationTransition(sourceID: "subforums", in: transition)
     .presentationDetents([.medium, .large])
   }
 

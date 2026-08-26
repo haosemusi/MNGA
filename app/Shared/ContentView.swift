@@ -91,7 +91,6 @@ struct ContentView: View {
       // Sheets
       .whatsNewSheet()
       .safariView(item: $openURL.inAppURL) { url in SafariView(url: url).preferredControlAccentColor(.accentColor) } // this is global-wide, no need to attribute again in sheets
-      .sheet(isPresented: $authStorage.isSigning) { LoginView() }
       .sheet(isPresented: $activity.activityItems.isNotNil(), content: {
         AppActivityView(activityItems: activity.activityItems ?? [])
       })
@@ -120,7 +119,6 @@ struct GlobalSheetsModifier: ViewModifier {
   @EnvironmentObject var userSignaturePost: UserSignaturePostModel
   @EnvironmentObject var textSelection: TextSelectionModel
   @EnvironmentObject var viewingImage: ViewingImageModel
-  @StateObject var prefs = PreferencesStorage.shared
 
   func body(content: Content) -> some View {
     content
@@ -128,7 +126,6 @@ struct GlobalSheetsModifier: ViewModifier {
       .sheet(isPresented: $shortMessagePost.showEditor) { ShortMessageEditorView() }
       .sheet(isPresented: $userSignaturePost.showEditor) { UserSignatureEditorView() }
       .sheet(isPresented: $textSelection.text.isNotNil()) { TextSelectionView().presentationDetents([.medium, .large]) }
-      .sheet(isPresented: $prefs.showing) { PreferencesView() }
       .modifier(PaywallSheetModifier())
       .fullScreenCover(isPresented: $viewingImage.showing) { NewImageViewer() }
   }

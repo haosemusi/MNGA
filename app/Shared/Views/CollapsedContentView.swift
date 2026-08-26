@@ -24,10 +24,7 @@ struct CollapsedContentView<Content: View>: View {
     VStack(alignment: .leading) {
       Button(action: { collapsedState.toggle() }) {
         HStack {
-          Image(systemName: collapsed ? "chevron.down" : "chevron.up")
-            .contentTransition(
-              .symbolEffect(.replace.magic(fallback: .downUp)),
-            )
+          collapseIcon
           Text(title)
             .animation(.none, value: collapsed) // disable animation to avoid glitch
         }.padding(.bottom, 1)
@@ -41,6 +38,18 @@ struct CollapsedContentView<Content: View>: View {
         }
       }
     }.fixedSize(horizontal: false, vertical: true)
+  }
+
+  @ViewBuilder
+  private var collapseIcon: some View {
+    if #available(iOS 18.0, *) {
+      Image(systemName: collapsed ? "chevron.down" : "chevron.up")
+        .contentTransition(
+          .symbolEffect(.replace.magic(fallback: .downUp)),
+        )
+    } else {
+      Image(systemName: collapsed ? "chevron.down" : "chevron.up")
+    }
   }
 }
 

@@ -23,7 +23,7 @@ class ContentEditorModel: ObservableObject {
   }
 
   @Published var text: String
-  @Published var selection: TextSelection?
+  @Published var selection: Range<Int>?
 
   @Published var image: Data? = nil
   @Published var showingImagePicker = false
@@ -34,25 +34,22 @@ class ContentEditorModel: ObservableObject {
 
   init(initialText: String) {
     text = initialText
-    selection = TextSelection(insertionPoint: text.endIndex)
+    selection = initialText.count ..< initialText.count
   }
 
   func insert(_ string: String) {
-    let selection = selection ?? TextSelection(insertionPoint: text.endIndex)
-    guard case let .selection(range) = selection.indices else { return }
-    let prefixLength = text.distance(from: text.startIndex, to: range.lowerBound)
+    let selection = resolvedSelection()
+    let range = stringRange(for: selection)
 
     text.replaceSubrange(range, with: string)
 
-    let insertionPoint = text.index(text.startIndex, offsetBy: prefixLength + string.count)
+    let insertionPoint = selection.lowerBound + string.count
     let textHash = text.hashValue
 
     // Sometimes it just doesn't work if we set string and selection at the same time...
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-      if self.text.hashValue == textHash, // text is not changed by other means
-         let ip = insertionPoint.samePosition(in: self.text)
-      {
-        self.selection = TextSelection(insertionPoint: ip)
+      if self.text.hashValue == textHash { // text is not changed by other means
+        self.selection = insertionPoint ..< insertionPoint
       }
     }
   }
@@ -68,26 +65,34 @@ class ContentEditorModel: ObservableObject {
   }
 
   private func appendTag(open: String, close: String) {
-    let selection = selection ?? TextSelection(insertionPoint: text.endIndex)
-    guard case let .selection(range) = selection.indices else { return }
-    let prefixLength = text.distance(from: text.startIndex, to: range.lowerBound)
-    let distance = text.distance(from: range.lowerBound, to: range.upperBound)
+    let selection = resolvedSelection()
+    let range = stringRange(for: selection)
+    let selectedText = String(text[range])
+    text.replaceSubrange(range, with: open + selectedText + close)
 
-    text.insert(contentsOf: open, at: range.lowerBound)
-    text.insert(contentsOf: close, at: text.index(text.startIndex, offsetBy: prefixLength + open.count + distance))
-
-    // Note: never reuse index after mutation! if there's re-allocation, the index is invalid!
-    let insertionPoint = text.index(text.startIndex, offsetBy: prefixLength + open.count + distance)
+    let insertionPoint = selection.upperBound + open.count
     let textHash = text.hashValue
 
     // Sometimes it just doesn't work if we set string and selection at the same time...
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-      if self.text.hashValue == textHash, // text is not changed by other means
-         let ip = insertionPoint.samePosition(in: self.text)
-      {
-        self.selection = TextSelection(insertionPoint: ip)
+      if self.text.hashValue == textHash { // text is not changed by other means
+        self.selection = insertionPoint ..< insertionPoint
       }
     }
+  }
+
+  private func resolvedSelection() -> Range<Int> {
+    let end = text.count
+    let selection = selection ?? end ..< end
+    let lowerBound = min(max(selection.lowerBound, 0), end)
+    let upperBound = min(max(selection.upperBound, lowerBound), end)
+    return lowerBound ..< upperBound
+  }
+
+  private func stringRange(for selection: Range<Int>) -> Range<String.Index> {
+    let lowerBound = text.index(text.startIndex, offsetBy: selection.lowerBound)
+    let upperBound = text.index(text.startIndex, offsetBy: selection.upperBound)
+    return lowerBound ..< upperBound
   }
 
   func appendBold() {

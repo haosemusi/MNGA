@@ -4,9 +4,10 @@
     {
       "identity" : "alerttoast",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/BugenZhao/AlertToast",
+      "location" : "https://github.com/elai950/AlertToast",
       "state" : {
-        "revision" : "57a6e66fa04899f38a1a99a6dbab0c84f37b22b6"
+        "revision" : "b39252eacd159904afd7d718bba0afabb87f2f2f",
+        "version" : "1.3.9"
       }
     },
     {

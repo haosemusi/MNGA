@@ -12,8 +12,27 @@ import SwiftUIX
 private struct NumberField: View {
   let title: LocalizedStringKey
   @Binding var text: String
-  @State var selection: TextSelection?
   @FocusState var isFocused: Bool
+
+  @ViewBuilder
+  var body: some View {
+    if #available(iOS 18.0, *) {
+      SelectableNumberField(title: title, text: $text)
+    } else {
+      TextField(title, text: $text)
+        .focused($isFocused)
+        .keyboardType(.numberPad)
+        .multilineTextAlignment(.trailing)
+    }
+  }
+}
+
+@available(iOS 18.0, *)
+private struct SelectableNumberField: View {
+  let title: LocalizedStringKey
+  @Binding var text: String
+  @State private var selection: TextSelection?
+  @FocusState private var isFocused: Bool
 
   var body: some View {
     TextField(title, text: $text, selection: $selection)
