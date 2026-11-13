@@ -97,6 +97,7 @@
 "Dim Images in Dark Mode" = "深色模式下调暗图片";
 "Cache Management" = "缓存管理";
 "Lock Screen Rotation" = "锁定屏幕旋转";
+"Only applies when folded" = "仅在折叠时生效";
 "Image" = "图片";
 "Image Cache" = "图片缓存";
 "Tap an item to clear it." = "轻触一项来清除缓存。";
@@ -117,6 +118,7 @@
 "Author Only" = "只看作者";
 "This Author Only" = "只看该作者";
 "Locate This Floor" = "定位此层";
+"Unable to locate this post in the full topic." = "无法在完整话题中定位此回复。";
 "Topic (Cached)" = "话题（缓存）";
 "View Cached Topic" = "查看本地缓存";
 "Cache Loaded" = "已加载本地缓存";

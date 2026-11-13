@@ -139,8 +139,8 @@ struct MNGAWhatsNew: WhatsNewCollectionProvider {
     )
 
     WhatsNew(
-      version: "2.3.2",
-      title: whatsNewTitle(version: "2.3.2"),
+      version: "2.3.3",
+      title: whatsNewTitle(version: "2.3.3"),
       features: [
         .init(
           image: .init(systemName: "photo"),
@@ -161,6 +161,20 @@ struct MNGAWhatsNew: WhatsNewCollectionProvider {
           image: .init(systemName: "checklist.checked"),
           title: "阅读体验持续打磨",
           subtitle: "新增加载最新回复，优化列表、时间、附件、表情和引用渲染，并修复多项导航与内容解析问题。",
+        ),
+      ],
+      primaryAction: .continue,
+      secondaryAction: .checkOutPlus,
+    )
+
+    WhatsNew(
+      version: "2.4",
+      title: whatsNewTitle(version: "2.4"),
+      features: [
+        .init(
+          image: .init(systemName: "rectangle.split.2x1"),
+          title: "适配 iPhone Duo",
+          subtitle: "展开后版块和帖子并排显示，折叠后接着看。",
         ),
       ],
       primaryAction: .continue,

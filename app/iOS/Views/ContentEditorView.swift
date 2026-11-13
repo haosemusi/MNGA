@@ -37,7 +37,7 @@ private struct SelectableSubjectTextFieldView: View {
   let focused: Bool
 
   var body: some View {
-    TextField("", text: $subject, selection: $selection)
+    TextField("", text: $subject, selection: $selection.fitting($subject))
       .toolbar {
         if focused {
           ToolbarItemGroup(placement: .keyboard) {
