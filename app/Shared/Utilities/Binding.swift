@@ -38,6 +38,7 @@ extension Binding {
   }
 }
 
+@available(iOS 18.0, *)
 extension TextSelection {
   func fits(in text: String) -> Bool {
     switch indices {
@@ -51,6 +52,7 @@ extension TextSelection {
   }
 }
 
+@available(iOS 18.0, *)
 extension Binding<TextSelection?> {
   /// Hides a selection that extends past the end of `text`.
   ///
